@@ -59,7 +59,8 @@
 ## 参考ページ
 * [1] [イベントの時系列分析による因果関係知識の獲得](https://www.jstage.jst.go.jp/article/tjsai/30/1/30_30_12/_pdf)
 * [2] [Kleinberg のバースト検知 (列挙型) について](http://cl-www.msi.co.jp/reports/kleinberg-enumerate.html)
-* [3] [pybursts 0.1.1](https://pypi.python.org/pypi/pybursts/0.1.1) [はてなブックマークエントリー情報取得API](http://developer.hatena.ne.jp/ja/documents/bookmark/apis/getinfo)
-* [4] [Granger因果による時系列データの因果推定（因果フェス2015）](http://www.slideshare.net/takashijozaki1/granger2015)
-* [5] [【 Python で 時系列分析 / 計量経済分析 】「Grangerの因果性テスト」で、時系列データ どうしの影響関係の方向 を 検定できる方法](http://qiita.com/HirofumiYashima/items/92588b661353b0e1aa5e)
-* [6] [はてなブックマーク記事のレコメンドシステムを作成　PythonによるはてなAPIの活用とRによるモデルベースレコメンド](http://overlap.hatenablog.jp/entry/2013/06/30/232200)
+* [3] [pybursts 0.1.1](https://pypi.python.org/pypi/pybursts/0.1.1)
+* [4] [はてなブックマークエントリー情報取得API](http://developer.hatena.ne.jp/ja/documents/bookmark/apis/getinfo)
+* [5] [Granger因果による時系列データの因果推定（因果フェス2015）](http://www.slideshare.net/takashijozaki1/granger2015)
+* [6] [【 Python で 時系列分析 / 計量経済分析 】「Grangerの因果性テスト」で、時系列データ どうしの影響関係の方向 を 検定できる方法](http://qiita.com/HirofumiYashima/items/92588b661353b0e1aa5e)
+* [7] [はてなブックマーク記事のレコメンドシステムを作成　PythonによるはてなAPIの活用とRによるモデルベースレコメンド](http://overlap.hatenablog.jp/entry/2013/06/30/232200)
