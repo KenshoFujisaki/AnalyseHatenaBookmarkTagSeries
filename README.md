@@ -6,34 +6,30 @@
 ![はてブのタグ付け因果をネットワーク表示（N=300）](./img/granger_large.png)
 
 ## はてなブックマークからの情報取得
-1. はてなブックマークIDの変更
+1. はてなブックマーク情報取得スクリプトの実行  
 
     ```shellscript
-    vim get_tags.py
+    python get_tags.py [はてなブックマークID] -D inverted_url_list.csv
     ```
-    
-    ```python
-    user = "ni66ling"    # 各自のはてなブックマークIDに変更する
-    ```
-2. はてなブックマーク情報取得スクリプトの実行  
-[注] 「マイブックマーク」は「公開する」に設定にする必要があります。設定ページは[こちら](http://b.hatena.ne.jp/-/my/config/profile)  
+    [注]  
+     * 「マイブックマーク」は「公開する」に設定にする必要があります。設定ページは[こちら](http://b.hatena.ne.jp/-/my/config/profile)  
+     * 細かい設定はコマンドライン引数で渡すことができます。  
+        ```
+        python get_tags.py -h
+        ```
 
-    ```shellscript
-    python get_tags.py
-    ```
 
 ## タグ付け系列に対する因果取得
 1. タグ付けのバースト系列取得 ＆ バースト系列に対するグレンジャー因果検定スクリプト実行
 
     ```shellscript
-    python detect_burst.py
+    python detect_causality.py invert_url_list.csv -o ./granger_causality.csv
     ```
     [備考] スクリプトのconfig値は、下記の通りです。
-    * `nof_tags_threshold`：この回数以上にタグ付けを行ったタグのみ解析対象とする
-    * `disp_rank`：利用回数が多い順で、この順位のタグまで解析対象とする
-    * `skip_tag_names`：このタグ名に一致するタグは解析対象から除外する
-    * `kleinberg_plot`：バースト系列をグラフ描画するか
-    * `silent_mode`：標準出力を抑制するか
+    * 細かい設定はコマンドライン引数で渡すことができます。  
+       ```
+       python detect_causality.py -h
+       ```
 
 ## 因果ネットワークの表示
 1. Rの実行

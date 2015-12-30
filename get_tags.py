@@ -6,42 +6,38 @@ import urllib2
 import json
 import feedparser
 import traceback
+import argparse
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
-# config ------------------------------------------------------------------
-user = "ni66ling"       # はてなuser_id
-feed_max = 10000        # ブックマーク最新取得上限数
-# -------------------------------------------------------------------------
-
-def main():
-    # Web情報取得の準備
+def main(hatena_id, feed_max, dest_urls, dest_inverted_urls):
+    # prepare getting web info.
     opener = urllib2.build_opener()
 
-    # はてなブックマークのfeed情報の取得
-    print("get bookmarks of %s:" % (user))
-    url_list = []        # urlリスト
-    invert_url_list = {} # 転置url(tagから見たurlのid)
+    # get the feed info. about Hatena bookmark.
+    print("get bookmarks of %s:" % (hatena_id))
+    url_list = []        # url list
+    invert_url_list = {} # inverted url list (tag: [url_id_1, url_id_2,...])
     id = 0
     feed_interval = 20
-    for i in range(0,feed_max,feed_interval):
+    for i in range(0, feed_max, feed_interval):
         feed_url = "http://b.hatena.ne.jp/" \
-                + user + "/rss?of=" + str(i) # はてなAPIに渡すクエリの作成
+                + hatena_id + "/rss?of=" + str(i) # create the query for Hatena API.
         try:
-            response = opener.open(feed_url) # urlオープン
+            response = opener.open(feed_url)
         except:
             continue
-        content = response.read() # feed情報の取得
-        feed = feedparser.parse(content) # feedパーサを用いてfeedを解析
-        # entriesがない場合break
+        content = response.read()
+        feed = feedparser.parse(content)
         if feed["entries"] == []:
             break
-        # urlリストの作成
+
+        # create url list.
         for e in feed["entries"]:
             try:
                 print("%d: %s" % (id, e["title"]))
-                # 転置url作成
+                # create inverted url list.
                 if not (e.has_key("tags") and
                         e.has_key("link") and
                         e.has_key("hatena_bookmarkcount")):
@@ -53,22 +49,22 @@ def main():
                     else:
                         if invert_url_list[normalized_tag][-1] != id:
                             invert_url_list[normalized_tag].append(id)
-                # urlリスト作成
+                # append url list.
                 url_list.append([
                     id,
                     e["link"],
-                    user,
+                    hatena_id,
                     e["hatena_bookmarkcount"],
                     re.sub("[,\"]","",e["title"])
-                ]) # url_listの作成（titleのカンマとダブルクォーテーションを置換）
+                ])
                 id += 1
             except:
                 print(traceback.format_exc())
                 pass
-        time.sleep(0.05) # アクセス速度の制御
+        time.sleep(0.05)
 
-    # urlリストをCSV出力
-    ofname = "url_list.csv"
+    # output url list with CSV.
+    ofname = dest_urls
     fout = open(ofname,"w")
     writer = csv.writer(fout,delimiter=",")
     writer.writerow(["id","url","user","count","title"])
@@ -76,8 +72,8 @@ def main():
         writer.writerow(t)
     fout.close()
 
-    # 転置urlをCSV出力
-    ofname = "invert_url_list.csv"
+    # output inverted url list with CSV.
+    ofname = dest_inverted_urls
     fout = open(ofname,"w")
     writer = csv.writer(fout,delimiter=",")
     writer.writerow(["tag","url_id,..."])
@@ -85,6 +81,59 @@ def main():
         writer.writerow([tag] + ids)
     fout.close()
 
+    # inform successfully process completed.
+    print((\
+            '\nprocess for %s is successfully completed. check following files.' +\
+            '\n    URL list:          %s' +\
+            '\n    inverted URL list: %s'\
+          ) % (hatena_id, dest_urls, dest_inverted_urls))
+
 if __name__ == "__main__":
-    main()
+    # parse args
+    parser = argparse.ArgumentParser(\
+            description='This script create the CSV describing web page and tag for specified Hatena bookmark user.')
+    parser.add_argument(\
+            'hatenaID', \
+            action='store', \
+            nargs=None, \
+            const=None, \
+            default=None, \
+            type=str, \
+            choices=None, \
+            help='Hatena Bookmark ID', \
+            metavar=None)
+    parser.add_argument(\
+            '-d', '--dest-url-list', \
+            action='store', \
+            nargs='?', \
+            const=None, \
+            default='./url_list.csv', \
+            type=str, \
+            choices=None, \
+            help='directory path where you want to create output CSV for URL list (default: "./url_list.csv")', \
+            metavar=None)
+    parser.add_argument(\
+            '-D', '--dest-inverted-url-list', \
+            action='store', \
+            nargs='?', \
+            const=None, \
+            default='./inverted_url_list.csv', \
+            type=str, \
+            choices=None, \
+            help='directory path where you want to create output CSV for inverted URL list (default: "./inverted_url_list.csv")', \
+            metavar=None)
+    parser.add_argument(\
+            '-f', '--feed-max', \
+            action='store', \
+            nargs='?', \
+            const=None, \
+            default=10000, \
+            type=int, \
+            choices=None, \
+            help='max page for feeding web pages (default: 10000)', \
+            metavar=None)
+    args = parser.parse_args()
+
+    # execute main
+    main(args.hatenaID, args.feed_max, args.dest_url_list, args.dest_inverted_url_list)
 
