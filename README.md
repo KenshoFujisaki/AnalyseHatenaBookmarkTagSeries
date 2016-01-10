@@ -17,6 +17,28 @@
         ```
         python get_tags.py -h
         ```
+        ```
+        usage: get_tags.py [-h] [-d [DEST_URL_LIST]] [-D [DEST_INVERTED_URL_LIST]]
+                           [-f [FEED_MAX]]
+                           hatenaID
+
+        This script create the CSV describing web page and tag for specified Hatena
+        bookmark user.
+        
+        positional arguments:
+          hatenaID              Hatena Bookmark ID
+        
+        optional arguments:
+          -h, --help            show this help message and exit
+          -d [DEST_URL_LIST], --dest-url-list [DEST_URL_LIST]
+                                directory path where you want to create output CSV for
+                                URL list (default: "./url_list.csv")
+          -D [DEST_INVERTED_URL_LIST], --dest-inverted-url-list [DEST_INVERTED_URL_LIST]
+                                directory path where you want to create output CSV for
+                                inverted URL list (default: "./inverted_url_list.csv")
+          -f [FEED_MAX], --feed-max [FEED_MAX]
+                                max page for feeding web pages (default: 10000)
+        ```
 
 
 ## タグ付け系列に対する因果取得
@@ -25,12 +47,75 @@
     ```shellscript
     python detect_causality.py invert_url_list.csv -o ./granger_causality.csv
     ```
-    [備考] スクリプトのconfig値は、下記の通りです。
+    [備考] 
     * 細かい設定はコマンドライン引数で渡すことができます。  
-       ```
-       python detect_causality.py -h
-       ```
-
+        ```
+        python detect_causality.py -h
+        ```
+        ```
+        usage: detect_causality.py [-h] [-s SKIP_TAGS [SKIP_TAGS ...]]
+                                   [-t [TAG_THRESHOLD]] [-r [RANK]]
+                                   [-f [KLEINBERG_EVENT_FREQUENCY]]
+                                   [-c [KLEINBERG_TRANSITION_COST]]
+                                   [-p [KLEINBERG_PLOT]] [-d [KLEINBERG_PLOT_DEST]]
+                                   [-g [GRANGER_MIN_LAG]] [-G [GRANGER_MAX_LAG]]
+                                   [-F [GRANGER_TEST_THRESHOLD]] [-P [GRANGER_PLOT]]
+                                   [-D [GRANGER_PLOT_DEST]] [-o [DEST_CSV]] [--debug]
+                                   src_csv
+ 
+        This script calculates the burst series by enumeration Kleinberg burst
+        analysis method for each row in the input CSV, a causal relationship between
+        the burst series is detected by the Granger causality test , and output to
+        CSV.
+        
+        positional arguments:
+          src_csv               directory path where you want to create output CSV for
+                                inverted URL list
+        
+        optional arguments:
+          -h, --help            show this help message and exit
+          -s SKIP_TAGS [SKIP_TAGS ...], --skip-tags SKIP_TAGS [SKIP_TAGS ...]
+                                tags for excluding analysing (default: None)
+          -t [TAG_THRESHOLD], --tag-threshold [TAG_THRESHOLD]
+                                minimum number of tags for analysing web page
+                                (default: 10)
+          -r [RANK], --rank [RANK]
+                                minimum rank of number of tags for analysing web page
+                                (default: 300)
+          -f [KLEINBERG_EVENT_FREQUENCY], --kleinberg-event-frequency [KLEINBERG_EVENT_FREQUENCY]
+                                the base of the exponential distribution that is used
+                                for modeling the event frequencies (default: 1.2)
+          -c [KLEINBERG_TRANSITION_COST], --kleinberg-transition-cost [KLEINBERG_TRANSITION_COST]
+                                coefficient for the transition costs between states
+                                (default: 0.2)
+          -p [KLEINBERG_PLOT], --kleinberg-plot [KLEINBERG_PLOT]
+                                boolean for plotting the Kleinberg burst series
+                                (default: False)
+          -d [KLEINBERG_PLOT_DEST], --kleinberg-plot-dest [KLEINBERG_PLOT_DEST]
+                                destination directory for plotting the Kleinberg burst
+                                series (default: "./burst_images/rank_%s.png")
+          -g [GRANGER_MIN_LAG], --granger-min-lag [GRANGER_MIN_LAG]
+                                the Granger causality test results are calculated for
+                                all lags from this value (default: 1)
+          -G [GRANGER_MAX_LAG], --granger-max-lag [GRANGER_MAX_LAG]
+                                the Granger causality test results are calculated for
+                                all lags up to this value (default: 1)
+          -F [GRANGER_TEST_THRESHOLD], --granger-test-threshold [GRANGER_TEST_THRESHOLD]
+                                significance level of the F-test for judging the
+                                Granger causality (default: 0.01)
+          -P [GRANGER_PLOT], --granger-plot [GRANGER_PLOT]
+                                boolean for plotting the Kleinberg burst series pair
+                                with Granger causality (default: False)
+          -D [GRANGER_PLOT_DEST], --granger-plot-dest [GRANGER_PLOT_DEST]
+                                destination directory for plotting the Kleinberg burst
+                                series pair with Granger causality (default:
+                                "./granger_images/granger_%s_%s.png")
+          -o [DEST_CSV], --dest-csv [DEST_CSV]
+                                directory path where you want to create output CSV for
+                                Granger causality (default: "./granger_causality.csv")
+          --debug               debug mode if this flag is set (default: False)
+        ```
+        
 ## 因果ネットワークの表示
 1. Rの実行
 
