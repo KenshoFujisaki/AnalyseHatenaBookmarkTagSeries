@@ -52,6 +52,29 @@
       edge.width=E(graphdata)$p_value)
     ```
 
+## 付録：偏グレンジャー因果の算出
+上では、グレンジャー因果を用いて因果ネットワークを作成しましたが、グレンジャー因果には第三者変数による影響を受けてしまうという考え/問題があります。この問題を解消する方法に、偏相関の考えを応用した偏グレンジャー因果という手法があります。ここでは、その偏グレンジャー因果検定の算出方法を記します。
+
+1. Rの実行
+
+    ```shellscript
+    R
+    ```
+2. 偏グレンジャー因果検定
+
+    ```Rscript
+    library(Matrix)
+    library(np)
+    library(devtools)
+    source_url('https://raw.githubusercontent.com/cran/FIAR/master/R/partGranger.R')
+    source_url('https://raw.githubusercontent.com/cran/FIAR/master/R/partGranger3.R')
+
+    csvdata <- read.csv("./burst_series.csv", head = F, stringsAsFactors=F)
+    trans_csvdata <- tail(t(csvdata), n=-1)
+    trans_csvdata_numeric <- apply(trans_csvdata, c(1,2), as.numeric)
+    partGranger3(trans_csvdata_numeric, nx=1, ny=1, order=1, bs=10)
+    ```
+
 ## 参考ページ
 * [1] [イベントの時系列分析による因果関係知識の獲得](https://www.jstage.jst.go.jp/article/tjsai/30/1/30_30_12/_pdf)
 * [2] [Kleinberg のバースト検知 (列挙型) について](http://cl-www.msi.co.jp/reports/kleinberg-enumerate.html)
